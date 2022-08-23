@@ -1,11 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { format, getHours } from "date-fns";
+import ptBR from "date-fns/esm/locale/pt-BR";
 import * as Location from "expo-location";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
+  FlatList,
   Image,
   StyleSheet,
   Text,
@@ -14,14 +16,20 @@ import {
 } from "react-native";
 import { API_KEY, UNSPLASH_KEY } from "react-native-dotenv";
 import { RFValue } from "react-native-responsive-fontsize";
+import { IForecast } from "../../@types/ForecastInformation";
+import { IWeatherInformation } from "../../@types/WeatherInformation";
 import NightBG from "../../assets/nightBG.png";
-import { IWeatherInformation } from "./types";
+import Footer from "../../components/Footer";
+import ForecastItem from "../../components/ForecastItem";
+import Header from "../../components/Header";
 
 const Home: React.FC = () => {
   const [location, setLocation] = useState<Location.LocationObject>(null);
   const [errorMsg, setErrorMsg] = useState<string>(null);
   const [weatherInformation, setWeatherInformation] =
     useState<IWeatherInformation>(null);
+  const [forecastInformation, setForecastInformation] =
+    useState<IForecast>(null);
   const [timestamp, setTimestamp] = useState(new Date());
   const [Loading, setLoading] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState<string>(null);
@@ -30,11 +38,13 @@ const Home: React.FC = () => {
     if (location) {
       setLoading(true);
       try {
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY}&units=metric&lang=pt_br`;
-        const { data } = await axios.get(url);
-        console.log("data => ", data);
+        const urlWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY}&units=metric&lang=pt_br`;
+        const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY}&units=metric&lang=pt_br`;
+        const [{ data: DataWeather }, { data: DataForecast }] =
+          await Promise.all([axios.get(urlWeather), axios.get(urlForecast)]);
+        console.log("data => ", DataWeather);
         setLoading(false);
-        return data;
+        return [DataWeather, DataForecast];
       } catch (error) {
         setLoading(false);
         console.log("error get weather information: ", error);
@@ -80,7 +90,8 @@ const Home: React.FC = () => {
       if (location) {
         const data = await getWeatherInformation();
         setTimestamp(new Date());
-        setWeatherInformation(data);
+        setWeatherInformation(data[0]);
+        setForecastInformation(data[1]);
       }
     })();
   }, [location]);
@@ -108,58 +119,15 @@ const Home: React.FC = () => {
             : NightBG
         }
         resizeMode="cover"
-        style={[
-          {
-            position: "absolute",
-            width: Dimensions.get("window").width,
-            height: "100%",
-          },
-        ]}
+        style={styles.imageBG}
       />
-      <View style={styles.header}>
-        <View style={styles.headerName}>
-          <Ionicons name="location-sharp" size={41} color="white" />
-          <Text style={styles.title}>{weatherInformation.name}</Text>
-        </View>
-        <Text style={styles.temp}>
-          {weatherInformation.main.temp.toFixed()}°
-        </Text>
-        <View style={styles.information}>
-          {weatherInformation.weather.map((item) => (
-            <View key={item.id} style={styles.descriptionContainer}>
-              <Image
-                source={{
-                  uri: `https://openweathermap.org/img/wn/${item.icon}.png`,
-                }}
-                style={styles.descriptionImage}
-              />
-              <Text style={styles.descriptionText}>{item.description}</Text>
-            </View>
-          ))}
-          <View style={styles.variantTemp}>
-            <Text style={styles.textVariant}>
-              Max: {weatherInformation.main.temp_max.toFixed()}°
-            </Text>
-            <Text style={styles.textVariant}>
-              Min: {weatherInformation.main.temp_min.toFixed()}°
-            </Text>
-          </View>
-          <TouchableOpacity
-            disabled={Loading}
-            onPress={updateLocation}
-            style={styles.reload}
-          >
-            {Loading ? (
-              <ActivityIndicator size="large" />
-            ) : (
-              <>
-                <Text style={styles.reloadText}>{format(timestamp, "p")}</Text>
-                <Ionicons name="reload" size={24} color="white" />
-              </>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
+      <Header
+        data={weatherInformation}
+        Loading={Loading}
+        updateData={updateLocation}
+        timestamp={timestamp.getTime()}
+      />
+      {forecastInformation && <Footer data={forecastInformation} />}
     </View>
   );
 };
@@ -171,58 +139,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#4a4e90",
-  },
-  header: {
-    width: "100%",
     alignItems: "center",
-    justifyContent: "flex-end",
-    marginTop: RFValue(98),
+    backgroundColor: "#fff",
   },
-  headerName: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: RFValue(41),
-    color: "#fff",
-  },
-  temp: {
-    fontSize: RFValue(96),
-    color: "#fff",
-  },
-  reload: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  reloadText: {
-    fontSize: RFValue(16),
-    color: "#fff",
-    marginRight: 10,
-  },
-  descriptionContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  descriptionText: {
-    fontSize: RFValue(20),
-    color: "#ffffff80",
-  },
-  descriptionImage: {
-    width: 30,
-    height: 30,
-  },
-  variantTemp: {
-    flexDirection: "row",
-  },
-  textVariant: {
-    fontSize: RFValue(20),
-    color: "#ffffff",
-    marginHorizontal: 10,
-    marginVertical: 15,
-  },
-  information: {
-    alignItems: "center",
+  imageBG: {
+    position: "absolute",
+    width: Dimensions.get("window").width,
+    height: "100%",
   },
 });
 export default Home;
