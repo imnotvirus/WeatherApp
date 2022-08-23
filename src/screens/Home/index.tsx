@@ -42,7 +42,6 @@ const Home: React.FC = () => {
         const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY}&units=metric&lang=pt_br`;
         const [{ data: DataWeather }, { data: DataForecast }] =
           await Promise.all([axios.get(urlWeather), axios.get(urlForecast)]);
-        console.log("data => ", DataWeather);
         setLoading(false);
         return [DataWeather, DataForecast];
       } catch (error) {
@@ -55,7 +54,6 @@ const Home: React.FC = () => {
   const updateLocation = async () => {
     const data = await Location.getCurrentPositionAsync({});
     setLocation(data);
-    console.log(data);
     return data;
   };
   const getBackgroundImage = useCallback(async () => {
@@ -65,7 +63,6 @@ const Home: React.FC = () => {
         hours < 12 ? "morning" : hours < 18 ? "afternoon" : "evening";
       const url = `https://api.unsplash.com/photos/random?client_id=${UNSPLASH_KEY}&orientation=portrait&query=${query}`;
       const { data } = await axios.get(url);
-      console.log(data.urls.full);
       setBackgroundImage(data.urls.full);
     } catch (error) {
       console.log("Error get background image: ", error);

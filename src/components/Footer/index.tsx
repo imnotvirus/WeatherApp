@@ -16,7 +16,6 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
         data={data.list}
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={{}}
         contentContainerStyle={{
           height: RFValue(156),
           alignItems: "flex-end",
