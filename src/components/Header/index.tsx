@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-interface HeaderProps {
+export interface HeaderProps {
 	data: Information;
 	updateData: () => void;
 	Loading: boolean;
@@ -50,6 +50,7 @@ const Header: React.FC<HeaderProps> = ({
 				{data.weather.map((item) => (
 					<View key={item.id} style={styles.descriptionContainer}>
 						<Image
+							testID="icon"
 							source={{
 								uri: `https://openweathermap.org/img/wn/${item.icon}.png`,
 							}}
@@ -70,6 +71,7 @@ const Header: React.FC<HeaderProps> = ({
 					disabled={Loading}
 					onPress={updateData}
 					style={styles.reload}
+					testID="button"
 				>
 					{Loading ? (
 						<ActivityIndicator size="large" />

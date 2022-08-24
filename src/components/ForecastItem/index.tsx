@@ -1,5 +1,5 @@
 import { format, parseISO } from 'date-fns';
-import ptBR from 'date-fns/esm/locale/pt-BR';
+import { ptBR } from 'date-fns/locale';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -22,12 +22,15 @@ const ForecastItem: React.FC<ForecastItemProps> = ({ data }) => {
 				</Text>
 			</View>
 			<Image
+				testID="icon"
 				source={{
 					uri: `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`,
 				}}
 				style={styles.image}
 			/>
-			<Text style={styles.temp}>{data.main.temp.toFixed()}°</Text>
+			<Text testID="temp" style={styles.temp}>
+				{data.main.temp.toFixed()}°
+			</Text>
 		</View>
 	);
 };

@@ -13,7 +13,7 @@ interface information {
 const Footer: React.FC<FooterProps> = ({ data }) => {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Previsões da semana</Text>
+			<Text style={styles.title}>Previsões</Text>
 			<FlatList
 				data={data.list}
 				horizontal
