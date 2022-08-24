@@ -1,16 +1,15 @@
-import { List } from "../../@types/ForecastInformation";
-
 export interface ForecastItemProps {
-  data: information;
+	data: information;
 }
 interface information {
-  dt_txt: string;
-  weather: weather[];
-  main: main;
+	dt: number;
+	dt_txt: string;
+	weather: weather[];
+	main: main;
 }
 interface weather {
-  icon: string;
+	icon: string;
 }
 interface main {
-  temp: number;
+	temp: number;
 }
