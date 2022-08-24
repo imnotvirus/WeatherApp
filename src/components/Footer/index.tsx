@@ -3,11 +3,15 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { IForecast } from "../../@types/ForecastInformation";
 import ForecastItem from "../ForecastItem";
+import { ForecastItemProps } from "../ForecastItem/types";
 
 interface FooterProps {
   data: IForecast;
 }
-
+interface information {
+  [key: string]: any;
+  list: Array<ForecastItemProps["data"]>;
+}
 const Footer: React.FC<FooterProps> = ({ data }) => {
   return (
     <View style={styles.container}>
