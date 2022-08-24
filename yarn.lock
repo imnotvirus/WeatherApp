@@ -5406,10 +5406,22 @@ react-native-dotenv@^3.3.1:
   dependencies:
     dotenv "^10.0.0"
 
+react-native-fast-image@^8.5.11:
+  version "8.5.11"
+  resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.5.11.tgz#e3dc969d0e4e8df026646bf18194465aa55cbc2b"
+  integrity sha512-cNW4bIJg3nvKaheG8vGMfqCt5LMWX9MS5+wMudgKIHbGO51spRr4sgnlhVgwHLcZ5aeNOVJ8CPRxDIWKRq/0QA==
+
 react-native-gradle-plugin@^0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.0.7.tgz#96602f909745239deab7b589443f14fce5da2056"
   integrity sha512-+4JpbIx42zGTONhBTIXSyfyHICHC29VTvhkkoUOJAh/XHPEixpuBduYgf6Y4y9wsN1ARlQhBBoptTvXvAFQf5g==
+
+react-native-image-blur-loading@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-image-blur-loading/-/react-native-image-blur-loading-1.2.0.tgz#124262c44674cd484d6780732a15cc5575c7e616"
+  integrity sha512-O+qL01jPr7D2KaFJmQlw4+mG/buBslULmUWCL64yfjtSoTypiewKnzkafj8u4Lpa3Swno/KEBDoa9V9pBlbIbA==
+  dependencies:
+    react-native-fast-image "^8.5.11"
 
 react-native-iphone-x-helper@^1.3.1:
   version "1.3.1"

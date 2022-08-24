@@ -22,7 +22,11 @@ import NightBG from "../../assets/nightBG.png";
 import Footer from "../../components/Footer";
 import ForecastItem from "../../components/ForecastItem";
 import Header from "../../components/Header";
-
+import ImageBlurLoading from "react-native-image-blur-loading";
+interface IBackgroundImage {
+  thumb: string;
+  regular: string;
+}
 const Home: React.FC = () => {
   const [location, setLocation] = useState<Location.LocationObject>(null);
   const [errorMsg, setErrorMsg] = useState<string>(null);
@@ -32,7 +36,8 @@ const Home: React.FC = () => {
     useState<IForecast>(null);
   const [timestamp, setTimestamp] = useState(new Date());
   const [Loading, setLoading] = useState(false);
-  const [backgroundImage, setBackgroundImage] = useState<string>(null);
+  const [backgroundImage, setBackgroundImage] =
+    useState<IBackgroundImage>(null);
 
   const getWeatherInformation = useCallback(async () => {
     if (location) {
@@ -63,7 +68,7 @@ const Home: React.FC = () => {
         hours < 12 ? "morning" : hours < 18 ? "afternoon" : "evening";
       const url = `https://api.unsplash.com/photos/random?client_id=${UNSPLASH_KEY}&orientation=portrait&query=${query}`;
       const { data } = await axios.get(url);
-      setBackgroundImage(data.urls.full);
+      setBackgroundImage(data.urls);
     } catch (error) {
       console.log("Error get background image: ", error);
     }
@@ -107,11 +112,18 @@ const Home: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Image
+      <ImageBlurLoading
+        thumbnailSource={
+          backgroundImage
+            ? {
+                uri: backgroundImage.thumb,
+              }
+            : NightBG
+        }
         source={
           backgroundImage
             ? {
-                uri: backgroundImage,
+                uri: backgroundImage.regular,
               }
             : NightBG
         }
